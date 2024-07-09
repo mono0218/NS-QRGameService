@@ -7,12 +7,19 @@ export class UserTable{
     }
 
     async createUser(){
-        const {data, error} = await this.supabase.from("UserMaster").insert({UserName:"test",Money:100}).select()
+        const {data, error} = await this.supabase.from("UserMaster")
+            .insert({UserName:"test",Money:100}).select()
 
         if (error) return {
             success: false,
             data: null,
             error: error.message
+        }
+
+        if (data.length === 0) return {
+            success:false,
+            data:null,
+            error:null
         }
 
         return {
@@ -27,7 +34,8 @@ export class UserTable{
     }
 
     async getUserMoney(UUID:string){
-        const {data, error} = await this.supabase.from("UserMaster").select("Money").eq("UUID",UUID)
+        const {data, error} = await this.supabase.from("UserMaster")
+            .select("Money").eq("UUID",UUID)
 
         if (error) return {
             success: false,

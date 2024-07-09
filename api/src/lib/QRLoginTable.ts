@@ -15,6 +15,12 @@ export class QRLoginTable{
             error:error.message
         }
 
+        if (data.length === 0) return {
+            success:false,
+            data:null,
+            error:null
+        }
+
         return {
             success:true,
             data:{
@@ -33,6 +39,12 @@ export class QRLoginTable{
             error:error.message
         }
 
+        if (data.length === 0) return {
+            success:false,
+            data:null,
+            error:null
+        }
+
         return {
             success:true,
             data:data,
@@ -47,6 +59,12 @@ export class QRLoginTable{
             success:false,
             data:null,
             error:error.message
+        }
+
+        if (data.length === 0) return {
+            success:false,
+            data:null,
+            error:null
         }
 
         return {

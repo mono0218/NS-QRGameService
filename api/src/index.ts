@@ -4,40 +4,43 @@ import dotenv from "dotenv"
 import {UserRoute} from "./route/user/user";
 import {QRLoginRoute} from "./route/service/qrLogin";
 import {GameServiceRoute} from "./route/service/gameService";
+import {Auth} from "./lib/Auth";
+import {never} from "zod";
+import {SystemServiceRoute} from "./route/service/systemService";
 
-const app = new Hono()
+type Variables = {
+    gameId: number
+}
+
 dotenv.config()
+const app = new Hono<{ Variables: Variables }>()
+
+
+const auth = new Auth()
 
 app.use('/service/*', async (c, next) => {
-  const apiKey = c.req.header('X-API-KEY')
-    c.set('gameId',apiKey)
-
-  if (false) {
-    await c.json({ message: 'Forbidden' }, 403)
-  }
-
-  await next()
-})
-
-app.use("/service/newGameService",async (c, next) => {
-  const apiKey = c.req.header('X-API-KEY')
-
-  if (false) {
-    await c.json({ message: 'Forbidden' }, 403)
-  }
-
-  await next()
-})
-
-app.use("/service/newGameServiceKey",async (c, next) => {
     const apiKey = c.req.header('X-API-KEY')
+    if (!apiKey) return c.json({ message: 'Forbidden' }, 403)
 
-    if (false) {
-        await c.json({ message: 'Forbidden' }, 403)
-    }
+    const result = await auth.apiKeyAuth(apiKey as string)
+    if (!result.success) return c.json({ message: 'Forbidden' }, 403)
 
-    await next()
+    c.set("gameId",result.data!.gameId)
+
+  await next()
 })
+
+app.use("/system/*",async (c, next) => {
+  const apiKey = c.req.header('X-API-KEY')
+
+  if (false) {
+    await c.json({ message: 'Forbidden' }, 403)
+  }
+
+  await next()
+})
+
+app.route("/system",SystemServiceRoute)
 
 app.route("/users",UserRoute)
 app.route("/service",QRLoginRoute)
