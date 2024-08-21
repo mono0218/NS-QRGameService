@@ -16,7 +16,7 @@ export class UserTable{
             error: error.message
         }
 
-        if (data.length === 0) return {
+        if (!(data) || data.length === 0) return {
             success:false,
             data:null,
             error:null
@@ -42,11 +42,11 @@ export class UserTable{
             data: null,
             error: error.message
         }
-
+        console.log(data)
         return {
             success: true,
             data: {
-                Money: data[0].Money
+                Money: data![0].Money
             },
             error: null
         }

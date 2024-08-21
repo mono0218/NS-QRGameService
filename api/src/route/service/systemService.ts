@@ -28,3 +28,11 @@ SystemServiceRoute.get("/getGameServiceList", async (c) => {
     if (!result.success) return c.json(result,500)
     return c.json(result,200)
 })
+
+SystemServiceRoute.post("/getGameService", async (c) => {
+    const json = await c.req.json()
+    const result = await systemService.getGameService(json.gameId)
+
+    if (!result.success) return c.json(result,500)
+    return c.json(result,200)
+})

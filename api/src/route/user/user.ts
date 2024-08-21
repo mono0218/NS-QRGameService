@@ -26,7 +26,7 @@ UserRoute.get('/auth/login', async (c) => {
 
 UserRoute.get('/getMoney', async (c) => {
     const session = await supabase.auth.getUser()
-    if (!session.data.user?.id) return c.json({error: ""},403)
+    if (!session.data.user?.id) return c.json({error: "Need Login"},403)
 
     const result = await userTable.getUserMoney(session.data.user.id)
     if (!result.success) return c.json(result,500)

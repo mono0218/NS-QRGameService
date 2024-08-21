@@ -60,4 +60,20 @@ export class SystemaService {
         }
     }
 
+    async getGameService(gameId:number){
+        const {data,error} = await this.supabase.from('GameServiceAdmin').select().eq('game_id',gameId)
+        if(!data || error) return {success:false,data:null,error:error?.message}
+        if (data.length === 0) return {success:false,data:null,error:null}
+
+        return {
+            success: true,
+            data: {
+                gameId: data[0].game_id,
+                adminUserId: data[0].admin_userid,
+                playMoney: data[0].PlayMoney
+            },
+            error: null
+        }
+    }
+
 }
