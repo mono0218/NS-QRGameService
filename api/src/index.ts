@@ -2,7 +2,6 @@ import { serve } from '@hono/node-server'
 import { Hono } from 'hono'
 import dotenv from "dotenv"
 import {UserRoute} from "./route/user/user";
-import {QRLoginRoute} from "./route/service/qrLogin";
 import {GameServiceRoute} from "./route/service/gameService";
 import {Auth} from "./lib/Auth";
 import {SystemServiceRoute} from "./route/service/systemService";
@@ -21,7 +20,7 @@ const auth = new Auth()
 app.use(
     '*',
     cors({
-        origin: ['http://localhost:5173'], // 本番と開発環境のURL
+        origin: ["*"], // 本番と開発環境のURL
         allowHeaders: ["*"],
         allowMethods: ['POST', 'GET'],
     })
@@ -42,8 +41,8 @@ app.use('/service/*', async (c, next) => {
 app.use("/system/*",async (c, next) => {
   const apiKey = c.req.header('X-API-KEY')
 
-  if (false) {
-    await c.json({ message: 'Forbidden' }, 403)
+  if (!apiKey) {
+      await c.json({message: 'Forbidden'}, 403)
   }
 
   await next()
@@ -52,7 +51,6 @@ app.use("/system/*",async (c, next) => {
 
 app.route("/system",SystemServiceRoute)
 app.route("/users",UserRoute)
-app.route("/service",QRLoginRoute)
 app.route("/service",GameServiceRoute)
 
 const port = 3000

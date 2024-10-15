@@ -68,6 +68,46 @@ paths:
       responses:
         200:
           description: "ゲームサービス取得成功"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: "成功かどうか"
+                  data:
+                    type: object
+                    properties:
+                      gameId:
+                        type: string
+                        description: "ゲームID"
+                      adminUserId:
+                        type: string
+                        description: "管理者ユーザーID"
+                      playMoney:
+                        type: number
+                        description: "プレイ料金"
+                  error:
+                    type: string
+                    description: "エラーメッセージ"
+        403:
+          description: "APIKeyが不正"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    additionalProperties: false
+                    description: "成功かどうか"
+                  data:
+                    type: object
+                  error:
+                    type: string
+                    description: "エラーメッセージ"
+
         500:
           description: "ゲームサービス取得失敗"
 
@@ -84,9 +124,62 @@ paths:
             type: string
           required: true
           description: "配布されたAPIKey"
+        - in: query
+          name: body
+          required: true
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  uuid:
+                    type: string
+                    description: "ユーザーID"
+              example:
+                uuid: "user-1234"
       responses:
         200:
           description: "ユーザー情報取得成功"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: "成功かどうか"
+                  data:
+                    type: object
+                    properties:
+                      uuid:
+                        type: string
+                        description: "ユーザーID"
+                      userName:
+                        type: string
+                        description: "ユーザー名"
+                      data:
+                        type: object
+                        description: "ゲームごとのユーザーデータ"
+                  error:
+                    type: string
+                    description: "エラーメッセージ"
+        403:
+          description: "APIKeyが不正"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    additionalProperties: false
+                    description: "成功かどうか"
+                  data:
+                    type: object
+                  error:
+                    type: string
+                    description: "エラーメッセージ"
+
         500:
           description: "ユーザー情報取得失敗"
 
@@ -103,11 +196,140 @@ paths:
             type: string
           required: true
           description: "配布されたAPIKey"
+        - in: query
+          name: body
+          required: true
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  uuid:
+                    type: string
+                    description: "ユーザーID"
+                  data:
+                    type: object
+                    description: "設定するデータ"
+              example:
+                uuid: "user-1234"
+                data: {}
       responses:
         200:
           description: "ユーザー情報設定成功"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: "成功かどうか"
+                  data:
+                    type: object
+                    properties:
+                      uuid:
+                        type: string
+                        description: "ユーザーID"
+                      userInfo:
+                        type: object
+                        description: "ゲームごとのユーザーデータ"
+                  error:
+                    type: string
+                    description: "エラーメッセージ"
+        403:
+          description: "APIKeyが不正"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    additionalProperties: false
+                    description: "成功かどうか"
+                  data:
+                    type: object
+                  error:
+                    type: string
+                    description: "エラーメッセージ"
+
         500:
           description: "ユーザー情報設定失敗"
+
+  /service/addUserPoint:
+    post:
+      tags:
+        - Service
+      summary: "ユーザーポイント追加"
+      description: "ユーザーのポイントを追加します"
+      parameters:
+        - in: header
+          name: X-API-KEY
+          schema:
+            type: string
+          required: true
+          description: "配布されたAPIKey"
+        - in: query
+          name: body
+          required: true
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  uuid:
+                    type: string
+                    description: "ユーザーID"
+                  point:
+                    type: number
+                    description: "追加するポイント数"
+              example:
+                uuid: "user-1234"
+                point: 50
+      responses:
+        200:
+          description: "ユーザーポイント追加成功"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: "成功かどうか"
+                  data:
+                    type: object
+                    properties:
+                      uuid:
+                        type: string
+                        description: "ユーザーID"
+                      money:
+                        type: number
+                        description: "追加後のポイント数"
+                  error:
+                    type: string
+                    description: "エラーメッセージ"
+
+        403:
+          description: "APIKeyが不正"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    additionalProperties: false
+                    description: "成功かどうか"
+                  data:
+                    type: object
+                  error:
+                    type: string
+                    description: "エラーメッセージ"
+
+        500:
+          description: "ユーザーポイント追加失敗"
+
   /service/getCode:
     get:
       tags:
@@ -124,8 +346,35 @@ paths:
       responses:
         200:
           description: "QRコード取得成功"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  loginCode:
+                    type: string
+                    description: "QRコード用のUUID"
+
+        403:
+          description: "APIKeyが不正"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    additionalProperties: false
+                    description: "成功かどうか"
+                  data:
+                    type: object
+                  error:
+                    type: string
+                    description: "エラーメッセージ"
+
         500:
           description: "QRコード取得失敗"
+
   /service/getResultCode:
     post:
       tags:
@@ -139,11 +388,56 @@ paths:
             type: string
           required: true
           description: "配布されたAPIKey"
+        - in: query
+          name: body
+          required: true
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    description: "QRコード結果"
+              example:
+                code: "QR1234"
       responses:
         200:
           description: "QRコード結果取得成功"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: "成功かどうか"
+                  data:
+                    type: object
+                    properties:
+                      resultUUID:
+                        type: string
+                        description: "UUID"
+                  error:
+                    type: string
+                    description: "エラーメッセージ"
+
+        403:
+          description: "APIKeyが不正"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    additionalProperties: false
+                    description: "成功かどうか"
+                  data:
+                    type: object
+                  error:
+                    type: string
+                    description: "エラーメッセージ"
+
         500:
           description: "QRコード結果取得失敗"
-
-
-
