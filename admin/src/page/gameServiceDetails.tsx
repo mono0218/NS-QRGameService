@@ -31,7 +31,6 @@ export default function GameServiceDetails() {
         const api = new AxiosManager()
         api.post("/system/newGameServiceKey",{"gameId":Number(id)}).then((res) => {
             if (res.data.success) {
-                console.log(res.data.data.key)
                 setAPIKey(res.data.data.key)
             }
         })

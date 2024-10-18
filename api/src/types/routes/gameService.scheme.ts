@@ -7,7 +7,7 @@ export const  IGetUserInfoScheme = z.object({
 
 export const ISetUserInfoScheme= z.object({
     uuid: z.string(),
-    data: z.object({})
+    data: z.string()
 });
 
 export const IAddUserPointScheme = z.object({

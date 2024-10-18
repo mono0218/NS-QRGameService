@@ -26,26 +26,69 @@ export class GameService{
         }
     }
 
-    async getUserInfo(gameId:number,uuid:string){
-        const {data,error} = await this.supabase.from('GameService').select(`
+    async getUserInfo(gameId: number, uuid: string) {
+        // データベースからユーザー情報を取得
+        const { data, error } = await this.supabase
+            .from("GameService")
+            .select(`
           game_id,
           PlayerInfo,
           UUID,
           UserMaster (UserName)
-        `).eq('game_id',gameId).eq('uuid',uuid)
+        `)
+            .eq('game_id', gameId)
+            .eq('UUID', uuid) // UUIDに修正（大文字と小文字が一致するように）
+            .single();
 
-        if(!data || error) return {success:false,data:null,error:error?.message}
-        if (data.length === 0) return {success:false,data:null,error:{message:"No User"}}
+        // データが存在しないかエラーの場合
+        if (error || !data) {
+            // ここでエラーが「列が存在しない」エラーでないかチェックするのは避け、
+            // データが存在しないことに基づいて処理を進めます
+            console.log('Error or no data found:', error);
 
+            // 新しいデータを挿入
+            const { data: insertData, error: insertError } = await this.supabase
+                .from("GameService")
+                .insert([{ game_id: gameId, UUID: uuid, PlayerInfo: {} }])
+                .select(`
+              game_id,
+              PlayerInfo,
+              UUID,
+              UserMaster (UserName)
+            `)
+                .single();
+
+            if (insertError) {
+                console.error('Insert error:', insertError);
+                return {
+                    success: false,
+                    data: null,
+                    error: insertError.message
+                };
+            }
+
+            // 挿入が成功した場合の返り値
+            return {
+                success: true,
+                data: {
+                    uuid: insertData?.UUID,
+                    userName: insertData?.UserMaster?.UserName,
+                    userInfo: insertData?.PlayerInfo
+                },
+                error: null
+            };
+        }
+
+        // 既存のデータが存在する場合の返り値
         return {
             success: true,
-            data:{
-                uuid: data[0].UUID,
-                userName: data[0].UserMaster!.UserName,
-                userInfo: data[0].PlayerInfo
+            data: {
+                uuid: data?.UUID,
+                userName: data?.UserMaster?.UserName,
+                userInfo: data?.PlayerInfo
             },
             error: null
-        }
+        };
     }
 
     async getUserMoney(uuid:string){

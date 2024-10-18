@@ -18,7 +18,7 @@ dotenv.config()
 
 const gameService = new GameService()
 
-GameServiceRoute.post('/getGameService', async (c) => {
+GameServiceRoute.get('/getGameService', async (c) => {
     try {
         let gameId = c.get('gameId')
         if (!gameId) return c.json({success:false,data:null,error:'APIkey is not allow'},403)
@@ -43,13 +43,12 @@ GameServiceRoute.post('/getUserInfo', async (c) => {
         const gameId = c.get('gameId')
         if (!gameId) return c.json({success:false,data:null,error:'APIkey is not allow'},403)
         const json = IGetUserInfoScheme.parse(await c.req.json())
-
         const result = await gameService.getUserInfo(gameId as number,json.uuid)
+
         if (!result.success) return c.json(result,500)
 
         return c.json(result,200)
     } catch (error) {
-        // バリデーションエラーの場合は500エラーを返す
         if (error instanceof ZodError) {
             return c.json({ success:false,data: 'Validation failed', error: error.errors }, 400);
         }
@@ -77,7 +76,7 @@ GameServiceRoute.post("/setUserInfo", async (c) => {
 
         // その他のエラーも500でキャッチ
         return c.json({ success:false,data:null, error:"Internal Server Error" }, 500);
-}
+    }
 })
 
 GameServiceRoute.post("/addUserPoint", async (c) => {
@@ -125,7 +124,6 @@ GameServiceRoute.post('/getResultCode', async (c) => {
         const result = await gameService.getResultCode(json.code)
 
         if (!result.success) return c.json(result,500)
-
         return c.json(result,200)
     } catch (error) {
         // バリデーションエラーの場合は500エラーを返す

@@ -33,7 +33,6 @@ UserRoute.get('/getPoint', async (c) => {
         if (!result.success) return c.json(result,500)
         return c.json(result,200)
     }catch (e){
-        console.log(e)
         return c.json({},500)
     }
 })
