@@ -111,7 +111,7 @@ GameServiceRoute.get('/getCode', async (c) => {
     } catch (error) {
         // バリデーションエラーの場合は500エラーを返す
         if (error instanceof ZodError) {
-            return c.json({ success:false,data: 'Validation failed', error: error.errors }, 400);
+            return c.json({ success:false, data: 'Validation failed', error: error.errors }, 400);
         }
 
         // その他のエラーも500でキャッチ
