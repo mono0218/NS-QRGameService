@@ -42,7 +42,6 @@ export class UserTable{
             data: null,
             error: error.message
         }
-        console.log(data)
         return {
             success: true,
             data: {

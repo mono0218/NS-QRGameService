@@ -6,7 +6,7 @@ export class AxiosManager {
 
     constructor() {
         this.axios = new axios.create({
-            baseURL: "http://localhost:3000/",
+            baseURL: "https://ns-qrgameservice.fly.dev/",
             headers: {
                 "Content-Type": "application/json",
                 "X-API-KEY": this.apiKey,

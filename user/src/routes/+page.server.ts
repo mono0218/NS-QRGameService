@@ -1,9 +1,6 @@
-import type { LayoutServerLoad } from './$types';
+import type { PageServerLoad } from './$types'
 
-export const load: LayoutServerLoad = async ({ locals: { safeGetSession }, cookies }) => {
-    const { session } = await safeGetSession();
-    return {
-        session,
-        cookies: cookies.getAll()
-    };
-};
+export const load: PageServerLoad = async ({ locals: { supabase } }) => {
+    const { data: countries } = await supabase.from('countries').select('name').limit(5).order('name')
+    return { countries: countries ?? [] }
+}

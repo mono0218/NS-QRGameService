@@ -4,6 +4,8 @@ import type {Database} from "../../types/database.types";
 import {UserTable} from "../../lib/UserTable";
 import {QRLoginTable} from "../../lib/QRLoginTable";
 import dotenv from "dotenv";
+import {UserInfo} from "../../index";
+import jwt from "jsonwebtoken";
 
 dotenv.config()
 if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_KEY) throw new Error('No SUPABASE ENV')
@@ -16,25 +18,33 @@ type Variables = {
     UserInfo:UserInfo
 }
 
-interface UserInfo {
-    sub: string
-    is_anonymous: boolean
-    session_id: string
-}
-
 export const UserRoute = new Hono<{ Variables: Variables }>()
 
 UserRoute.get('/getPoint', async (c) => {
-    const user = c.get("UserInfo")
+    try{
+        const JWT = c.req.header('JWT')
+        const data = jwt.verify(JWT!, process.env.JWT_SECRET!, {
+            complete: true,
+        })
+        const user = data.payload as UserInfo
 
-    const result = await userTable.getUserMoney(user.sub)
-    if (!result.success) return c.json(result,500)
+        const result = await userTable.getUserMoney(user.sub)
 
-    return c.json(result,200)
+        if (!result.success) return c.json(result,500)
+        return c.json(result,200)
+    }catch (e){
+        console.log(e)
+        return c.json({},500)
+    }
 })
 
 UserRoute.post('/scanCode', async (c) => {
-    const user = c.get("UserInfo")
+
+    const JWT = c.req.header('JWT')
+    const data = jwt.verify(JWT!, process.env.JWT_SECRET!, {
+        complete: true,
+    })
+    const user = data.payload as UserInfo
 
     const json = await c.req.json()
     const result = await qrLoginTable.scanCode(json.code,user.sub)

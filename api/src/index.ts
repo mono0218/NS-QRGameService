@@ -13,7 +13,7 @@ type Variables = {
     UserInfo:UserInfo
 }
 
-interface UserInfo {
+export interface UserInfo {
     sub: string
     is_anonymous: boolean
     session_id: string
@@ -48,7 +48,7 @@ app.use('/service/*', async (c, next) => {
 app.use("/system/*",async (c, next) => {
   const apiKey = c.req.header('X-API-KEY')
 
-  if (!apiKey) {
+  if (!apiKey || apiKey != process.env.ADMIN_API_KEY) {
       await c.json({message: 'Forbidden'}, 403)
   }
 
@@ -57,16 +57,17 @@ app.use("/system/*",async (c, next) => {
 
 app.use("/users/*",async (c, next) => {
     const JWT = c.req.header('JWT')
-    const data = jwt.verify(JWT!, process.env.JWT_SECRET!, {
-        complete: true,
-    })
+    try {
+        const data = jwt.verify(JWT!, process.env.JWT_SECRET!, {
+            complete: true,
+        })
+        const userInfo = data.payload as UserInfo
 
-    const userInfo = data.payload as UserInfo
-
-    if (userInfo){
         c.set('UserInfo', userInfo)
-    }else{
-        await c.json({message: 'Forbidden'}, 403)
+        await next()
+    } catch {
+        c.json({message: 'Forbidden'}, 403)
+        await next()
     }
 })
 
