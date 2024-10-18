@@ -6,14 +6,21 @@ import {GameServiceRoute} from "./route/service/gameService";
 import {Auth} from "./lib/Auth";
 import {SystemServiceRoute} from "./route/service/systemService";
 import {cors} from "hono/cors";
+import jwt from 'jsonwebtoken'
 
 type Variables = {
     gameId: number
+    UserInfo:UserInfo
+}
+
+interface UserInfo {
+    sub: string
+    is_anonymous: boolean
+    session_id: string
 }
 
 dotenv.config()
 const app = new Hono<{ Variables: Variables }>()
-
 
 const auth = new Auth()
 
@@ -48,6 +55,20 @@ app.use("/system/*",async (c, next) => {
   await next()
 })
 
+app.use("/users/*",async (c, next) => {
+    const JWT = c.req.header('JWT')
+    const data = jwt.verify(JWT!, process.env.JWT_SECRET!, {
+        complete: true,
+    })
+
+    const userInfo = data.payload as UserInfo
+
+    if (userInfo){
+        c.set('UserInfo', userInfo)
+    }else{
+        await c.json({message: 'Forbidden'}, 403)
+    }
+})
 
 app.route("/system",SystemServiceRoute)
 app.route("/users",UserRoute)
