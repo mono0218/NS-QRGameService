@@ -2,6 +2,7 @@
 <script lang="ts">
     import { invalidate } from '$app/navigation'
     import { onMount } from 'svelte'
+    import "./app.css";
 
     export let data
 
@@ -23,6 +24,6 @@
     <title>User Management</title>
 </svelte:head>
 
-<div class="container" style="padding: 50px 0 100px 0">
+<div class="w-full sm:w-3/4 md:w-2/3 lg:w-1/2 xl:w-1/3 mx-auto">
     <slot />
 </div>

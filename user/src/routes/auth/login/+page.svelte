@@ -7,9 +7,10 @@
         const { data, error } = await supabase.auth.signInAnonymously()
         if (error) {
             console.error(error)
-        }else if (data) {
-            await goto("/")
-            console.log(data)
+            alert(error.message)
+        }else{
+            console.log(data);
+            goto("/")
         }
     }
 </script>
@@ -25,7 +26,7 @@
         <button
                 class="font-black text-xl text-white bg-blue-400 pt-3 pb-3 pr-10 pl-10 flex items-center rounded-2xl text-center"
                 on:click={onClick}
-        >Login with Google
+        >Login with Anonymously
         </button>
     </div>
 </section>
