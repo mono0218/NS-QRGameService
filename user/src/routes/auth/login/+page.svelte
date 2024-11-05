@@ -10,6 +10,7 @@
             alert(error.message)
         }else{
             console.log(data);
+            alert("Login success");
             goto("/")
         }
     }

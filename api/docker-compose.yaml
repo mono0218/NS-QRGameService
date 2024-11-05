@@ -1,0 +1,11 @@
+version: '3'
+services:
+  postgres:
+    container_name: sample-db
+    image: postgres:latest
+    restart: always
+    ports:
+      - "54320:5432"
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres"

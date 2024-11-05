@@ -20,7 +20,7 @@
         const data = await supabase.auth.getSession();
 
         if (data.data.session) {
-            const raw = await fetch(`${PUBLIC_API_SERVER}/users/scanCode`, {
+            const raw = await fetch(`${PUBLIC_API_SERVER}/v1/qrcode`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

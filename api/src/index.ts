@@ -1,82 +1,44 @@
 import { serve } from '@hono/node-server'
 import { Hono } from 'hono'
 import dotenv from "dotenv"
-import {UserRoute} from "./route/user/user";
-import {GameServiceRoute} from "./route/service/gameService";
-import {Auth} from "./lib/Auth";
-import {SystemServiceRoute} from "./route/service/systemService";
 import {cors} from "hono/cors";
-import jwt from 'jsonwebtoken'
-
-type Variables = {
-    gameId: number
-    UserInfo:UserInfo
-}
-
-export interface UserInfo {
-    sub: string
-    is_anonymous: boolean
-    session_id: string
-}
-
+import {UsersRoute} from "./route/users";
+import {ServiceRoute} from "./route/service";
+import {QrcodeRoute} from "./route/qrcode";
+import {ZodError} from "zod";
+import {HTTPException} from "hono/http-exception";
+import {webhookRoute} from "./route/webhook";
 dotenv.config()
-const app = new Hono<{ Variables: Variables }>()
 
-const auth = new Auth()
+const app = new Hono()
 
 app.use(
     '*',
     cors({
-        origin: ["*"], // 本番と開発環境のURL
+        origin: ["*","http://localhost:5173"],
         allowHeaders: ["*"],
-        allowMethods: ['POST', 'GET'],
+        allowMethods: ['POST', 'GET', 'PUT', 'DELETE', 'OPTIONS'],
     })
 )
 
-app.use('/service/*', async (c, next) => {
-    const apiKey = c.req.header('X-API-KEY')
-    if (!apiKey) return c.json({ message: 'Forbidden' }, 403)
+app.route("/v1/users",UsersRoute)
+app.route("/v1/service",ServiceRoute)
+app.route("/v1/qrcode",QrcodeRoute)
+app.route("/webhook",webhookRoute)
 
-    const result = await auth.apiKeyAuth(apiKey as string)
-    if (!result.success || !result.data) return c.json({ message: 'Forbidden' }, 403)
-
-    c.set("gameId",result.data!.gameId)
-
-  await next()
-})
-
-app.use("/system/*",async (c, next) => {
-  const apiKey = c.req.header('X-API-KEY')
-
-  if (!apiKey || apiKey != process.env.ADMIN_API_KEY) {
-      await c.json({message: 'Forbidden'}, 403)
-  }
-
-  await next()
-})
-
-app.use("/users/*",async (c, next) => {
-    const JWT = c.req.header('JWT')
-    try {
-        const data = jwt.verify(JWT!, process.env.JWT_SECRET!, {
-            complete: true,
-        })
-        const userInfo = data.payload as UserInfo
-
-        c.set('UserInfo', userInfo)
-        await next()
-    } catch {
-        c.json({message: 'Forbidden'}, 403)
-        await next()
+app.onError((err,c) => {
+    if (err instanceof ZodError) {
+        return c.json({status: 400, data:{}, message: err.errors})
     }
+
+    if (err instanceof HTTPException) {
+        return c.json({status: err.status, data:{}, message: err.message})
+    }
+
+    return c.json({status:500, data:{}, message: err.message})
 })
 
-app.route("/system",SystemServiceRoute)
-app.route("/users",UserRoute)
-app.route("/service",GameServiceRoute)
-
-const port = 3000
 serve({
   fetch: app.fetch,
-  port
+  port:3000
 })
