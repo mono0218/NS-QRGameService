@@ -15,7 +15,7 @@ const app = new Hono()
 app.use(
     '*',
     cors({
-        origin: ["*","http://localhost:5173"],
+        origin: ["*","https://yoyogi-game.monodev.cloud"],
         allowHeaders: ["*"],
         allowMethods: ['POST', 'GET', 'PUT', 'DELETE', 'OPTIONS'],
     })
