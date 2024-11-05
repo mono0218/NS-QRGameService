@@ -16,7 +16,7 @@ async function main() {
         data:{
             id: "3a26da0b-ac1a-73f5-e616-b8c044a18fcb",
             name: "TestService",
-            hashKey: "TestTest"
+            hashKey: "a8d627d93f518e9096b6f40e36d27b7660fa26d318ef1adc43da750e49ebe4be"
         }
     })
 
