@@ -9,12 +9,15 @@ export function userAuth(key:string|undefined):string{
     if (!process.env.JWT_SECRET) console.error('JWT_SECRET not set')
     if (!key) throw new HTTPException(401, {message:'Unauthorized'})
 
-    const data = jwt.verify(key, process.env.JWT_SECRET!)
-    if (data instanceof String) {
-        throw new HTTPException(401, {message:'Unauthorized'})
-    }
+    let sub = ''
 
-    return data.sub as string
+    jwt.verify(key, process.env.JWT_SECRET!,function(err, decoded){
+        if (err) throw new HTTPException(401, {message:'Unauthorized'})
+
+        sub = decoded?.sub as string
+    })
+
+    return sub
 }
 
 export async function serviceAuth(key:string|undefined){

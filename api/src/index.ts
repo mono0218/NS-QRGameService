@@ -15,7 +15,7 @@ const app = new Hono()
 app.use(
     '*',
     cors({
-        origin: ["*","https://yoyogi-game.monodev.cloud"],
+        origin: ["*","https://yoyogi-game.monodev.cloud","http://localhost:5173"],
         allowHeaders: ["*"],
         allowMethods: ['POST', 'GET', 'PUT', 'DELETE', 'OPTIONS'],
     })
@@ -28,14 +28,14 @@ app.route("/webhook",webhookRoute)
 
 app.onError((err,c) => {
     if (err instanceof ZodError) {
-        return c.json({status: 400, data:{}, message: err.errors})
+        return c.json({status: 400, data:{}, message: err.errors}, 400)
     }
 
     if (err instanceof HTTPException) {
-        return c.json({status: err.status, data:{}, message: err.message})
+        return c.json({status: err.status, data:{}, message: err.message},err.status)
     }
 
-    return c.json({status:500, data:{}, message: err.message})
+    return c.json({status:500, data:{}, message: err.message},500)
 })
 
 serve({

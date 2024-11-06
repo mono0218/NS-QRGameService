@@ -1,17 +1,19 @@
-<script>
+<script lang="ts">
     import { createClient } from '@supabase/supabase-js';
     import { PUBLIC_SUPABASE_ANON_KEY, PUBLIC_SUPABASE_URL } from '$env/static/public';
-    import {goto} from "$app/navigation";
+    let isLoad = false
+
     const onClick = async () => {
+        isLoad = true
         const supabase = createClient(PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY);
         const { data, error } = await supabase.auth.signInAnonymously()
         if (error) {
             console.error(error)
             alert(error.message)
+            isLoad = false
         }else{
-            console.log(data);
-            alert("Login success");
-            goto("/")
+            const button = document.querySelector(".sendMainPage") as HTMLAnchorElement
+            button.click()
         }
     }
 </script>
@@ -20,6 +22,15 @@
     <title>Login</title>
     <meta name="description" content="Login to the app" />
 </svelte:head>
+
+{#if isLoad}
+    <!-- 読み込み中モーダル -->
+    <div class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+        <div class="bg-white p-8 rounded shadow-lg text-center">
+            <p class="text-lg font-bold">ログイン中...</p>
+        </div>
+    </div>
+{/if}
 
 <section>
     <div class="flex flex-col items-center justify-center h-screen">
@@ -31,3 +42,6 @@
         </button>
     </div>
 </section>
+
+<a href="/" class="sendMainPage" hidden >
+</a>

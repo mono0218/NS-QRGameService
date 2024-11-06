@@ -1,8 +1,11 @@
-<script>
+<script lang="ts">
     import { goto } from "$app/navigation";
-    export let data;
-    $: ({ countries } = data);
-    let point = 0;
+
+    /** @type {import('./$types').PageLoad} */
+    export let data:{
+        username: string;
+        point: number;
+    }
 </script>
 
 <div class="container mx-auto p-6 space-y-8">
@@ -14,7 +17,7 @@
     <img src="/img.png" alt="">
 
     <div class="flex flex-col items-center space-y-4">
-        <p class="text-lg">ポイント合計: {point}</p>
+        <p class="text-lg">ポイント合計: {data.point}</p>
 
         <button
                 class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
@@ -23,6 +26,6 @@
             QRコードを読む
         </button>
 
-        <p class="text-sm text-gray-500">UUID: </p>
+        <p class="text-sm text-gray-500">username: {data.username}</p>
     </div>
 </div>
