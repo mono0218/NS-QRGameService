@@ -1,12 +1,14 @@
 <script lang="ts">
     import { ScanQRCode } from "@kuiper/svelte-scan-qrcode";
-    import { createClient } from "@supabase/supabase-js";
-    import { PUBLIC_API_SERVER, PUBLIC_SUPABASE_ANON_KEY, PUBLIC_SUPABASE_URL } from "$env/static/public";
+    import { PUBLIC_API_SERVER,} from "$env/static/public";
+
+    /** @type {import('./$types').PageLoad} */
+    export let data:{
+        jwt:string
+    }
 
     let result = "";
     let isLock = false;
-
-
 
     function _onPermissionError() {
         alert("Permission rejected");
@@ -17,15 +19,12 @@
         if (isLock) return;
         isLock = true;
 
-        const supabase = createClient(PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY);
-        const { data } = await supabase.auth.getSession();
-
-        if (data.session) {
+        if (data.jwt) {
             const raw = await fetch(`${PUBLIC_API_SERVER}/v1/qrcode`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "X-API-KEY": data.session.access_token,
+                    "X-API-KEY": data.jwt,
                 },
                 body: JSON.stringify({ code: result })
             });
@@ -33,17 +32,13 @@
             if (!raw.ok) {
                 isLock = false;
                 alert("エラーが発生しました");
+                location.reload();
             } else {
                 alert("スキャンに成功しました");
 
                 const button = document.querySelector(".sendMainPage") as HTMLAnchorElement
                 button.click()
             }
-        } else {
-            alert("ログインしてください");
-
-            const button = document.querySelector(".sendMainPage") as HTMLAnchorElement
-            button.click()
         }
     }
 </script>
@@ -69,5 +64,5 @@
 </div>
 
 
-<a href="/" class="sendMainPage" hidden >
+<a href="/" class="sendMainPage" hidden data-sveltekit-reload>
 </a>

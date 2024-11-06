@@ -6,19 +6,14 @@ export const load: PageServerLoad = async ({ locals: { supabase } }) => {
     const { data } = await supabase.auth.getSession();
 
     if (data.session) {
-        const raw = await fetch(`${PUBLIC_API_SERVER}/v1/users`, {
+        const raw = await fetch(`${PUBLIC_API_SERVER}/v1/users/debug`, {
             headers: {
                 "Content-Type": "application/json",
                 "X-API-KEY": data.session.access_token,
             },
         });
-
-        if (raw.status != 200) redirect(302,"/auth/login")
-
-        const json = await raw.json();
         return {
-            username: json.data.username,
-            point: json.data.point
+            data: (await raw.json()).data
         }
     }else{
         redirect(302,"/auth/login")

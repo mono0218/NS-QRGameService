@@ -33,6 +33,40 @@ UsersRoute.get("/", async (c) => {
     return c.json({status: 200, data: data, message: 'success'});
 })
 
+UsersRoute.get("/debug",async (c)=>{
+    const userId= userAuth(c.req.header('X-API-KEY'))
+    const user= await prisma.user.findUnique({
+        where:{
+            id:userId
+        },
+        include:{
+            UserPoint:{
+                select:{
+                    id:true,
+                    point:true,
+                    userId:true,
+                    serviceId:true,
+                    createdAt:true,
+                    updatedAt:true
+                }
+            },
+            Qrcode:{
+                select:{
+                    id:true,
+                    userId:true,
+                    serviceId:true,
+                    createdAt:true,
+                    updatedAt:true
+                }
+            }
+        }
+    })
+
+    if (!user) return c.json("user not found", 404)
+
+    return c.json({status: 200, data: user, message: 'success'});
+})
+
 UsersRoute.put("/", async (c) => {
     const userId= userAuth(c.req.header('X-API-KEY'))
     const reqJson = updateUser.parse(await c.req.json())

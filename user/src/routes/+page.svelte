@@ -6,11 +6,27 @@
         username: string;
         point: number;
     }
+
+    let click1 = 0;
+    let click2 = 0;
+
+    function  addClick1() {
+        click1++;
+    }
+
+    function  addClick2() {
+        click2++;
+    }
+
+    $:if(click1 >= 5 && click2 >= 5) {
+        const button = document.querySelector(".sendMainPage") as HTMLAnchorElement
+        button.click()
+    }
 </script>
 
 <div class="container mx-auto p-6 space-y-8">
     <div class="text-center space-y-2">
-        <h1 class="text-3xl font-black">ゲームセンター</h1>
+        <button class="text-3xl font-black" on:click={addClick1}>ゲームセンター</button>
         <h2 class="text-xl">in 新宿代々木</h2>
     </div>
 
@@ -26,6 +42,9 @@
             QRコードを読む
         </button>
 
-        <p class="text-sm text-gray-500">username: {data.username}</p>
+        <button class="text-sm text-gray-500" on:click={addClick2}>username: {data.username}</button>
     </div>
 </div>
+
+<a href="/debug" class="sendMainPage" hidden data-sveltekit-reload>
+</a>
