@@ -17,8 +17,10 @@ model User {
   id        String      @id @default(uuid())
   username  String
   UserPoint UserPoint[]
+  Qrcode    Qrcode[]
 
-  Qrcode Qrcode[]
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 }
 
 model Service {
@@ -27,6 +29,9 @@ model Service {
   hashKey   String
   UserPoint UserPoint[]
   Qrcode    Qrcode[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 }
 
 model UserPoint {
@@ -36,6 +41,9 @@ model UserPoint {
   serviceId String
   service   Service @relation(fields: [serviceId], references: [id])
   point     Int
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 }
 
 model Qrcode {
@@ -44,4 +52,7 @@ model Qrcode {
   user      User?   @relation(fields: [userId], references: [id])
   serviceId String
   service   Service @relation(fields: [serviceId], references: [id])
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 }
