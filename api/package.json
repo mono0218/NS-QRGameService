@@ -6,12 +6,15 @@
   },
   "dependencies": {
     "@hono/node-server": "^1.12.0",
+    "@newrelic/pino-enricher": "^1.1.1",
     "@prisma/client": "^5.21.1",
     "@supabase/supabase-js": "^2.44.3",
     "dotenv": "^16.4.5",
     "generate-api-key": "^1.0.2",
     "hono": "4.6.5",
     "jsonwebtoken": "9.0.2",
+    "newrelic": "^12.6.0",
+    "pino": "^9.5.0",
     "unique-names-generator": "^4.7.1",
     "zod": "^3.23.8"
   },
