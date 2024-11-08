@@ -35,7 +35,7 @@ app.use('*', async (c, next) => {
 
     // リクエストの詳細ログ
     try {
-        const requestBody = await c.req.parseBody();  // リクエストボディをパース
+        const requestBody = await c.req.json();  // リクエストボディをパース
         logger.info({
             message: "Request Information",
             method: c.req.method,
@@ -45,6 +45,7 @@ app.use('*', async (c, next) => {
             userId: jwt.decode(c.req.header("X-API-KEY") as string, {complete: true})?.payload.sub as string || "user not found",
             body: requestBody,
         });
+        c.set("requestBody", requestBody);
     } catch (error: unknown) {
         if (error instanceof Error) {
             logger.error({

@@ -29,7 +29,7 @@ ServiceRoute.get("/", async (c) => {
 
 ServiceRoute.post("/points", async (c) => {
     const serviceId = await serviceAuth(c.req.header('X-API-KEY'))
-    const reqJson = addPoint.parse(await c.req.json())
+    const reqJson = addPoint.parse(await c.get("requestBody"))
 
     await prisma.userPoint.create({
         data: {
