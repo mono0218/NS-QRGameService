@@ -27,7 +27,7 @@ QrcodeRoute.get("/", async (c) => {
 QrcodeRoute.post("/", async (c) => {
     const userId= userAuth(c.req.header('X-API-KEY'))
 
-    const reqJson = scanQrcode.parse(await c.get("requestBody"))
+    const reqJson = scanQrcode.parse(await c.req.json())
     console.log(reqJson)
 
     const qrcode = await prisma.qrcode.update({

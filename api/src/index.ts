@@ -33,20 +33,14 @@ app.use('*', async (c, next) => {
     // リクエスト開始時間の記録
     const startTime = Date.now();
 
-    if(c.req.method != "GET"){
-        const requestBody = await c.req.json();  // リクエストボディをパース
-        logger.info({
-            message: "Request Information",
-            method: c.req.method,
-            path: c.req.url,
-            query: c.req.query(),
-            headers: c.req.header(),
-            userId: jwt.decode(c.req.header("X-API-KEY") as string, {complete: true})?.payload.sub as string || "user not found",
-            body: requestBody,
-        });
-
-        c.set("requestBody", requestBody);
-    }
+    logger.info({
+        message: "Request Information",
+        method: c.req.method,
+        path: c.req.url,
+        query: c.req.query(),
+        headers: c.req.header(),
+        userId: jwt.decode(c.req.header("X-API-KEY") as string, {complete: true})?.payload.sub as string || "user not found",
+    });
 
     await next();
 

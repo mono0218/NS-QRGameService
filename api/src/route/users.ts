@@ -69,7 +69,7 @@ UsersRoute.get("/debug",async (c)=>{
 
 UsersRoute.put("/", async (c) => {
     const userId= userAuth(c.req.header('X-API-KEY'))
-    const reqJson = updateUser.parse(await c.get("requestBody"))
+    const reqJson = updateUser.parse(await c.req.json())
 
     const user = await prisma.user.update(
         {
