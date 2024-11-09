@@ -15,13 +15,13 @@
     "jsonwebtoken": "9.0.2",
     "newrelic": "^12.6.0",
     "pino": "^9.5.0",
+    "prisma": "^5.22.0",
     "unique-names-generator": "^4.7.1",
     "zod": "^3.23.8"
   },
   "devDependencies": {
     "@types/jsonwebtoken": "^9.0.7",
     "@types/node": "^20.17.6",
-    "prisma": "^5.21.1",
     "ts-node": "^10.9.2",
     "tsx": "^4.7.1",
     "typescript": "^5.6.3"

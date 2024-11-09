@@ -15,6 +15,12 @@
             button.click()
         }
     }
+
+    const onClick2=async()=>{
+        const button = document.querySelector(".sendMainPage") as HTMLAnchorElement
+        button.click()
+    }
+
 </script>
 
 <svelte:head>
@@ -38,6 +44,11 @@
                 class="font-black text-xl text-white bg-blue-400 pt-3 pb-3 pr-10 pl-10 flex items-center rounded-2xl text-center"
                 on:click={onClick}
         >Login with Anonymously
+        </button>
+        <button
+                class="font-black text-xl text-white bg-blue-400 pt-3 pb-3 pr-10 pl-10 flex items-center rounded-2xl text-center"
+                on:click={onClick2}
+        >ログイン済みの方はこちら！
         </button>
     </div>
 </section>

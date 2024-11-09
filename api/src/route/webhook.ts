@@ -6,7 +6,7 @@ export const webhookRoute = new Hono()
 const prisma = new PrismaClient()
 
 webhookRoute.post("/signup", async (c) => {
-    const reqData = await c.req.json()
+    const reqData = await c.get("requestBody")
 
     const username = uniqueNamesGenerator({
         dictionaries: [adjectives, colors, animals], // 形容詞 + 色 + 動物の組み合わせ

@@ -33,8 +33,7 @@ app.use('*', async (c, next) => {
     // リクエスト開始時間の記録
     const startTime = Date.now();
 
-    // リクエストの詳細ログ
-    try {
+    if(c.req.method != "GET"){
         const requestBody = await c.req.json();  // リクエストボディをパース
         logger.info({
             message: "Request Information",
@@ -45,14 +44,8 @@ app.use('*', async (c, next) => {
             userId: jwt.decode(c.req.header("X-API-KEY") as string, {complete: true})?.payload.sub as string || "user not found",
             body: requestBody,
         });
+
         c.set("requestBody", requestBody);
-    } catch (error: unknown) {
-        if (error instanceof Error) {
-            logger.error({
-                message: "Failed to parse JSON body",
-                error: error.message,
-            });
-        }
     }
 
     await next();
